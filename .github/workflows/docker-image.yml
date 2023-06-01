@@ -24,7 +24,7 @@ jobs:
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }} #son los env variables que estan en el repositorio > settings > secrets and variables > actions
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        NEW_VERSION: ${{ steps.version.outputs.version}} # extrae el version del output del paso con id=version
+        NEW_VERSION: ${{ steps.version.outputs.version }} # extrae el version del output del paso con id=version
       run: | #que es lo que quiero correr. El | es para que cada linea sea independiente y se ejecuten una tras otra.
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         echo "New version: $NEW_VERSION!!!!"
