@@ -10,9 +10,23 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest #se toma la imagen preconfigurado, ahi viene el deamon de docker, por ejemplo.
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+       #el primer paso es tomar todo el codigo que tengo en el repositorio
+    - name: Checkout code #nombre humanamente legible para nosotros. Toma lo que tenemos en nuestro repositorio
+      uses: actions/checkout@v3 # es un repositorio en github que ya viene con ciertos procedimientos para llegar a este punto
+      with:
+        fetch-depth: 0 #para que vaya bien adentro en la busqueda de nuestro historial de commits
+
+    - name: Docker login
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }} #son los env variables que estan en secrets > actions
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: | #que es lo que quiero correr. El | es para que cada linea sea independiente y se ejecuten una tras otra.
+        echo "Iniciando login"
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        echo "Fin del login"
+
+    # - name: Build the Docker image
+    #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
