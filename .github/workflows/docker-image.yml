@@ -26,7 +26,6 @@ jobs:
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: | #que es lo que quiero correr. El | es para que cada linea sea independiente y se ejecuten una tras otra.
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-        echo "New version: $NEW_VERSION!!!!"
     
     - name: Git Semantic Version # para versionamiento automatico
       uses: PaulHatch/semantic-version@v4.0.3
