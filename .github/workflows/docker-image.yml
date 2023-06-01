@@ -24,11 +24,9 @@ jobs:
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }} #son los env variables que estan en el repositorio > settings > secrets and variables > actions
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        NEW_VERSION: ${{ steps.version.outputs.version }} # extrae el version del output del paso con id=version
       run: | #que es lo que quiero correr. El | es para que cada linea sea independiente y se ejecuten una tras otra.
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         echo "New version: $NEW_VERSION!!!!"
-
     
     - name: Git Semantic Version # para versionamiento automatico
       uses: PaulHatch/semantic-version@v4.0.3
@@ -38,15 +36,19 @@ jobs:
         format: "${major}.${minor}.${patch}-prerelease${increment}"
       id: version #se necesita el id para hacer referencia a todo este paso
     
-    # - name: Build Docker Image
-    #   run: |
-    #     docker build -t allanvillatorof/docker-graphql:0.0.2 .
-    #     docker build -t allanvillatorof/docker-graphql:latest .
+    - name: Build Docker Image
+      env:
+        NEW_VERSION: ${{ steps.version.outputs.version }} # extrae el version del output del paso con id=version
+      run: |
+        docker build -t allanvillatorof/docker-graphql:$NEW_VERSION .
+        docker build -t allanvillatorof/docker-graphql:latest .
 
-    # - name: Push Docker Image
-    #   run: |
-    #     docker push allanvillatorof/docker-graphql:0.0.2
-    #     docker push allanvillatorof/docker-graphql:latest
+    - name: Push Docker Image
+      env:
+        NEW_VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        docker push allanvillatorof/docker-graphql:$NEW_VERSION
+        docker push allanvillatorof/docker-graphql:latest
 
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
