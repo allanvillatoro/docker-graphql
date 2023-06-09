@@ -9,7 +9,7 @@ FROM node:19-alpine3.15 as builder
 WORKDIR /app
 COPY --from=dev-deps /app/node_modules ./node_modules
 COPY . .
-# RUN yarn test
+RUN yarn test
 RUN yarn build
 
 FROM node:19-alpine3.15 as prod-deps
@@ -26,12 +26,3 @@ COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 
 CMD [ "node","dist/main.js"]
-
-
-
-
-
-
-
-
-
